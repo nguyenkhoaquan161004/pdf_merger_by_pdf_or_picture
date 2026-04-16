@@ -194,7 +194,13 @@ async function mergeFiles() {
         resultSection.style.display = 'none';
         mergeBtn.disabled = true;
 
-        const filePaths = selectedFiles.map(f => f.path);
+        const fileIds = selectedFiles.map(f => f.id);
+        
+        // Ensure .pdf extension
+        let finalFileName = outputFileName;
+        if (!finalFileName.toLowerCase().endsWith('.pdf')) {
+            finalFileName += '.pdf';
+        }
 
         const response = await fetch('/api/merge', {
             method: 'POST',
@@ -202,30 +208,33 @@ async function mergeFiles() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                filePaths: filePaths,
-                fileName: outputFileName
+                fileIds: fileIds,
+                fileName: finalFileName
             })
         });
 
-        const data = await response.json();
-
         if (!response.ok) {
-            showError(data.error || 'Lỗi khi gộp file');
+            const errorData = await response.json();
+            showError(errorData.error || 'Lỗi khi gộp file');
             progressSection.style.display = 'none';
             mergeBtn.disabled = false;
             return;
         }
 
+        // Get PDF blob
+        const blob = await response.blob();
+        
         // Simulate progress completion
         progressFill.style.width = '100%';
         progressText.textContent = 'Gộp thành công!';
 
         setTimeout(() => {
             progressSection.style.display = 'none';
-            showResult(data);
+            showResultWithBlob(blob, finalFileName);
         }, 500);
 
-        mergedFileName = data.fileName;
+        mergedFileName = finalFileName;
+        window.pdfBlob = blob; // Store blob globally for download
 
     } catch (error) {
         showError('Lỗi: ' + error.message);
@@ -235,6 +244,12 @@ async function mergeFiles() {
 }
 
 // Show Result
+function showResultWithBlob(blob, fileName) {
+    resultMessage.textContent = `Gộp thành công! File: ${fileName} (${formatFileSize(blob.size)})`;
+    resultSection.style.display = 'block';
+}
+
+// Legacy function for backward compatibility
 function showResult(data) {
     resultMessage.textContent = `Gộp thành công! File: ${data.fileName}`;
     resultSection.style.display = 'block';
@@ -242,17 +257,23 @@ function showResult(data) {
 
 // Download File
 async function downloadFile() {
-    if (!mergedFileName) return;
+    if (!window.pdfBlob || !mergedFileName) {
+        showError('Không có file để tải về');
+        return;
+    }
 
+    // Create blob URL and trigger download
+    const url = URL.createObjectURL(window.pdfBlob);
     const link = document.createElement('a');
-    link.href = `/api/download/${mergedFileName}`;
+    link.href = url;
     link.download = mergedFileName;
     link.click();
 
     // Clean up
     setTimeout(() => {
-        fetch('/api/cleanup', { method: 'POST' }).catch(() => { });
-    }, 1000);
+        URL.revokeObjectURL(url);
+        window.pdfBlob = null;
+    }, 100);
 }
 
 // Reset Form
@@ -261,6 +282,7 @@ function resetForm() {
     fileInput.value = '';
     fileName.value = 'merged';
     mergedFileName = '';
+    window.pdfBlob = null;
     renderFileList();
     progressSection.style.display = 'none';
     resultSection.style.display = 'none';
