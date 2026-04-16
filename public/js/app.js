@@ -58,7 +58,7 @@ async function handleFiles(files, append = false) {
 
     try {
         hideAlert();
-        
+
         const response = await fetch('/api/upload', {
             method: 'POST',
             body: formData
@@ -83,7 +83,7 @@ async function handleFiles(files, append = false) {
 
         renderFileList();
         mergeBtn.disabled = false;
-        
+
         // Reset input
         fileInput.value = '';
         if (addFileInput) addFileInput.value = '';
@@ -101,7 +101,7 @@ function renderFileList() {
 
     fileListSection.style.display = 'block';
     document.getElementById('fileCount').textContent = selectedFiles.length;
-    
+
     fileList.innerHTML = selectedFiles.map((file, index) => `
         <div class="file-item">
             <div class="file-item-info">
@@ -127,17 +127,17 @@ function renderFileList() {
 // Move File
 function moveFile(index, direction) {
     const newIndex = index + direction;
-    
+
     // Kiểm tra giới hạn
     if (newIndex < 0 || newIndex >= selectedFiles.length) {
         return;
     }
-    
+
     // Hoán đổi
     const temp = selectedFiles[index];
     selectedFiles[index] = selectedFiles[newIndex];
     selectedFiles[newIndex] = temp;
-    
+
     renderFileList();
 }
 
@@ -145,7 +145,7 @@ function moveFile(index, direction) {
 function removeFile(index) {
     selectedFiles.splice(index, 1);
     renderFileList();
-    
+
     if (selectedFiles.length === 0) {
         mergeBtn.disabled = true;
         fileInput.value = '';

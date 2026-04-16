@@ -31,3 +31,7 @@ tmp/
 # Build output
 dist/
 build/
+
+# Vercel
+.vercel/
+.vercelignore

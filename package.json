@@ -5,11 +5,12 @@
     "main": "merger.js",
     "type": "module",
     "scripts": {
-        "start": "node merger.js",
-        "batch": "node merger.js --batch",
-        "interactive": "node merger.js --interactive",
+        "start": "node web-server.js",
         "web": "node web-server.js",
-        "dev": "node web-server.js"
+        "dev": "node web-server.js",
+        "cli": "node merger.js",
+        "batch": "node merger.js --batch",
+        "interactive": "node merger.js --interactive"
     },
     "dependencies": {
         "pdf-lib": "^1.17.1",
