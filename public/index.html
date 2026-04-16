@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📄 PDF Merger - Gộp Ảnh & PDF</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📄 PDF Merger</h1>
+                <p>Kết hợp hình ảnh & PDF thành một file liền mạch</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="card">
+                <!-- Upload Section -->
+                <div class="section">
+                    <h2>📁 Bước 1: Tải File</h2>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3>Kéo & thả file tại đây</h3>
+                        <p>hoặc</p>
+                        <label for="fileInput" class="btn btn-primary">Chọn File</label>
+                        <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.tiff,.pdf" style="display: none;">
+                        <p class="hint">Hỗ trợ: JPG, PNG, GIF, WebP, TIFF, PDF</p>
+                    </div>
+                </div>
+
+                <!-- File List -->
+                <div class="section" id="fileListSection" style="display: none;">
+                    <h2>✓ Tệp Đã Chọn</h2>
+                    <div class="file-list" id="fileList"></div>
+                    <button class="btn btn-danger" onclick="clearFiles()">Xóa Tất Cả</button>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="section">
+                    <h2>⚙️ Bước 2: Cài Đặt</h2>
+                    <div class="form-group">
+                        <label for="fileName">Tên File Output:</label>
+                        <div class="input-group">
+                            <input type="text" id="fileName" placeholder="Ví dụ: report" value="merged">
+                            <span class="suffix">.pdf</span>
+                        </div>
+                        <small>Đuôi .pdf sẽ được thêm tự động</small>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="section">
+                    <h2>🚀 Bước 3: Thực Hiện</h2>
+                    <button class="btn btn-success btn-large" id="mergeBtn" onclick="mergeFiles()" disabled>
+                        <span>🔗 Gộp Tất Cả</span>
+                    </button>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-section" id="progressSection" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Đang xử lý...</p>
+                </div>
+
+                <!-- Download Section -->
+                <div class="section result-section" id="resultSection" style="display: none;">
+                    <div class="success-icon">✓</div>
+                    <h2>Hoàn Thành!</h2>
+                    <p id="resultMessage"></p>
+                    <button class="btn btn-success" id="downloadBtn" onclick="downloadFile()">
+                        📥 Tải Xuống PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm()">
+                        🔄 Làm Lại
+                    </button>
+                </div>
+
+                <!-- Error Message -->
+                <div class="alert alert-error" id="errorAlert" style="display: none;"></div>
+                <div class="alert alert-success" id="successAlert" style="display: none;"></div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="card info-card">
+                <h3>💡 Mẹo Sử Dụng</h3>
+                <ul>
+                    <li>✓ Tất cả ảnh sẽ tự động có cùng chiều rộng (A4)</li>
+                    <li>✓ PDF gốc sẽ được bảo toàn chất lượng</li>
+                    <li>✓ Không giới hạn số lượng file</li>
+                    <li>✓ Thứ tự file sẽ được giữ nguyên</li>
+                    <li>✓ File tạm sẽ tự động xóa sau khi download</li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>PDF Merger v1.0 | Tạo PDF liền mạch từ hình ảnh & PDF</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

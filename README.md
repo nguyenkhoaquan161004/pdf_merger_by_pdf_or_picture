@@ -25,7 +25,25 @@ npm install
 
 2. **Chạy script:**
 
-### Chế độ Tương Tác (Chọn File Từng Cái)
+### 🌐 Chế Độ Web Interface (Dễ Dùng Nhất - Mới!)
+```bash
+npm run web
+```
+
+Sau đó mở browser và truy cập: **http://localhost:3000**
+
+**Ưu điểm:**
+- ✅ Giao diện web đẹp, dễ sử dụng
+- ✅ Hỗ trợ kéo & thả (drag & drop)
+- ✅ Xem trước danh sách file
+- ✅ Tải về ngay sau khi gộp
+- ✅ Không cần command line
+
+---
+
+### 💻 Chế Độ CLI (Dòng Lệnh)
+
+#### Chế độ Tương Tác (chọn file từng cái)
 ```bash
 npm start
 ```
@@ -34,13 +52,7 @@ hoặc:
 node merger.js --interactive
 ```
 
-**Quy trình:**
-- Chọn thư mục chứa file
-- Chọn các file cần kết hợp (dùng Space để chọn)
-- Nhập tên file output
-- Script sẽ tiến hành xử lý
-
-### Chế độ Batch (Xử Lý Tất Cả File)
+#### Chế độ Batch (xử lý tất cả file)
 ```bash
 npm run batch
 ```
@@ -48,12 +60,6 @@ hoặc:
 ```bash
 node merger.js --batch
 ```
-
-**Quy trình:**
-- Chọn thư mục chứa file
-- Script sẽ tự động xử lý tất cả file hình ảnh/PDF trong thư mục
-- Nhập tên file output
-- Hoàn thành!
 
 ## 📁 Định Dạng Hỗ Trợ
 
