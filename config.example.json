@@ -1,0 +1,40 @@
+{
+    "merged": "Config file cho PDF Merger",
+    "documentationUrl": "Xem README.md để biết thêm chi tiết",
+    "supportedImageFormats": [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "tiff"
+    ],
+    "supportedPdfFormats": [
+        "pdf"
+    ],
+    "pageSettings": {
+        "format": "A4",
+        "width": 595,
+        "height": 842,
+        "unit": "pixels"
+    },
+    "alternativeFormats": {
+        "letter": {
+            "width": 612,
+            "height": 792
+        },
+        "a3": {
+            "width": 842,
+            "height": 1191
+        },
+        "a5": {
+            "width": 420,
+            "height": 595
+        }
+    },
+    "compression": {
+        "enabled": false,
+        "quality": "high"
+    },
+    "notes": "Sửa merger.js để thay đổi cài đặt tiên tiến"
+}
