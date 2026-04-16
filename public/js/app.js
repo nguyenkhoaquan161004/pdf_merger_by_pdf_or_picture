@@ -39,8 +39,16 @@ fileInput.addEventListener('change', (e) => {
     handleFiles(e.target.files);
 });
 
+// Add File Input Change (thêm file sau)
+const addFileInput = document.getElementById('addFileInput');
+if (addFileInput) {
+    addFileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files, true);  // true = thêm vào danh sách hiện tại
+    });
+}
+
 // Handle Files
-async function handleFiles(files) {
+async function handleFiles(files, append = false) {
     if (!files || files.length === 0) return;
 
     const formData = new FormData();
@@ -63,11 +71,22 @@ async function handleFiles(files) {
             return;
         }
 
-        selectedFiles = data.files;
+        if (append) {
+            // Thêm file mới vào danh sách hiện tại
+            selectedFiles = selectedFiles.concat(data.files);
+            showSuccess(`Đã thêm ${data.files.length} file`);
+        } else {
+            // Thay thế danh sách
+            selectedFiles = data.files;
+            showSuccess(`Đã tải lên ${data.files.length} file`);
+        }
+
         renderFileList();
         mergeBtn.disabled = false;
-        showSuccess(`Đã tải lên ${data.files.length} file thành công`);
-
+        
+        // Reset input
+        fileInput.value = '';
+        if (addFileInput) addFileInput.value = '';
     } catch (error) {
         showError('Lỗi: ' + error.message);
     }
@@ -81,19 +100,45 @@ function renderFileList() {
     }
 
     fileListSection.style.display = 'block';
+    document.getElementById('fileCount').textContent = selectedFiles.length;
+    
     fileList.innerHTML = selectedFiles.map((file, index) => `
         <div class="file-item">
             <div class="file-item-info">
-                <div class="file-item-name">
-                    ${index + 1}. ${file.name}
-                </div>
-                <div class="file-item-size">
-                    ${formatFileSize(file.size)}
-                </div>
+                <span class="file-item-number">${index + 1}</span>
+                <div class="file-item-name">${file.name}</div>
+                <div class="file-item-size">${formatFileSize(file.size)}</div>
             </div>
-            <button class="file-item-remove" onclick="removeFile(${index})" title="Xóa file">×</button>
+            <div class="file-item-actions">
+                <button class="file-item-btn" onclick="moveFile(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Di chuyển lên">
+                    ▲
+                </button>
+                <button class="file-item-btn" onclick="moveFile(${index}, 1)" ${index === selectedFiles.length - 1 ? 'disabled' : ''} title="Di chuyển xuống">
+                    ▼
+                </button>
+                <button class="file-item-remove" onclick="removeFile(${index})" title="Xóa file">
+                    ✕
+                </button>
+            </div>
         </div>
     `).join('');
+}
+
+// Move File
+function moveFile(index, direction) {
+    const newIndex = index + direction;
+    
+    // Kiểm tra giới hạn
+    if (newIndex < 0 || newIndex >= selectedFiles.length) {
+        return;
+    }
+    
+    // Hoán đổi
+    const temp = selectedFiles[index];
+    selectedFiles[index] = selectedFiles[newIndex];
+    selectedFiles[newIndex] = temp;
+    
+    renderFileList();
 }
 
 // Remove File
@@ -104,15 +149,21 @@ function removeFile(index) {
     if (selectedFiles.length === 0) {
         mergeBtn.disabled = true;
         fileInput.value = '';
+        if (addFileInput) addFileInput.value = '';
     }
 }
 
 // Clear All Files
 function clearFiles() {
+    if (!confirm('Bạn chắc chắn muốn xóa tất cả file?')) {
+        return;
+    }
     selectedFiles = [];
     fileInput.value = '';
+    if (addFileInput) addFileInput.value = '';
     renderFileList();
     mergeBtn.disabled = true;
+    hideAlert();
 }
 
 // Format File Size
@@ -200,7 +251,7 @@ async function downloadFile() {
 
     // Clean up
     setTimeout(() => {
-        fetch('/api/cleanup', { method: 'POST' }).catch(() => {});
+        fetch('/api/cleanup', { method: 'POST' }).catch(() => { });
     }, 1000);
 }
 

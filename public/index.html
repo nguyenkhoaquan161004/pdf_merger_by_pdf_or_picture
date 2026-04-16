@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📄 PDF Merger - Gộp Ảnh & PDF</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -22,10 +24,11 @@
                 <!-- Upload Section -->
                 <div class="section">
                     <h2>📁 Bước 1: Tải File</h2>
-                    
+
                     <div class="upload-area" id="uploadArea">
                         <div class="upload-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                 <polyline points="17 8 12 3 7 8"></polyline>
                                 <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -34,16 +37,21 @@
                         <h3>Kéo & thả file tại đây</h3>
                         <p>hoặc</p>
                         <label for="fileInput" class="btn btn-primary">Chọn File</label>
-                        <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.tiff,.pdf" style="display: none;">
+                        <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.tiff,.pdf"
+                            style="display: none;">
                         <p class="hint">Hỗ trợ: JPG, PNG, GIF, WebP, TIFF, PDF</p>
                     </div>
                 </div>
 
                 <!-- File List -->
                 <div class="section" id="fileListSection" style="display: none;">
-                    <h2>✓ Tệp Đã Chọn</h2>
+                    <h2>✓ Tệp Đã Chọn (<span id="fileCount">0</span> file)</h2>
                     <div class="file-list" id="fileList"></div>
-                    <button class="btn btn-danger" onclick="clearFiles()">Xóa Tất Cả</button>
+                    <div class="file-actions">
+                        <label for="addFileInput" class="btn btn-primary btn-sm">+ Thêm File</label>
+                        <input type="file" id="addFileInput" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.tiff,.pdf" style="display: none;">
+                        <button class="btn btn-danger btn-sm" onclick="clearFiles()">🗑️ Xóa Tất Cả</button>
+                    </div>
                 </div>
 
                 <!-- Settings Section -->
@@ -114,4 +122,5 @@
 
     <script src="js/app.js"></script>
 </body>
+
 </html>

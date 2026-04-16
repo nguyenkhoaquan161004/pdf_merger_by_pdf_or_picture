@@ -33,12 +33,12 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname).toLowerCase();
         const supportedFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.pdf'];
-        
+
         if (supportedFormats.includes(ext)) {
             cb(null, true);
         } else {
@@ -58,30 +58,30 @@ function ensurePdfExtension(filename) {
 // Chuyển ảnh thành PDF
 async function imageToPdf(imagePath) {
     const pdfDoc = await PDFDocument.create();
-    
+
     const metadata = await sharp(imagePath).metadata();
     const { width, height } = metadata;
-    
+
     const imageBytes = await sharp(imagePath)
         .png()
         .toBuffer();
-    
+
     const A4_WIDTH = 1200;
     const aspectRatio = width / height;
-    
+
     const pageWidth = A4_WIDTH;
     const pageHeight = A4_WIDTH / aspectRatio;
-    
+
     const pngImage = await pdfDoc.embedPng(imageBytes);
     const page = pdfDoc.addPage([pageWidth, pageHeight]);
-    
+
     page.drawImage(pngImage, {
         x: 0,
         y: 0,
         width: pageWidth,
         height: pageHeight,
     });
-    
+
     return pdfDoc;
 }
 
@@ -98,17 +98,17 @@ app.post('/api/upload', upload.array('files', 100), (req, res) => {
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: 'Không có file nào được tải lên' });
         }
-        
+
         const uploadedFiles = req.files.map(file => ({
             name: file.originalname,
             path: file.path,
             size: file.size
         }));
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             files: uploadedFiles,
-            message: `Đã tải lên ${uploadedFiles.length} file` 
+            message: `Đã tải lên ${uploadedFiles.length} file`
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -119,24 +119,24 @@ app.post('/api/upload', upload.array('files', 100), (req, res) => {
 app.post('/api/merge', async (req, res) => {
     try {
         const { filePaths, fileName } = req.body;
-        
+
         if (!filePaths || filePaths.length === 0) {
             return res.status(400).json({ error: 'Vui lòng chọn ít nhất 1 file' });
         }
-        
+
         if (!fileName) {
             return res.status(400).json({ error: 'Vui lòng nhập tên file' });
         }
-        
+
         const finalPdf = await PDFDocument.create();
-        
+
         for (let i = 0; i < filePaths.length; i++) {
             const file = filePaths[i];
             const ext = path.extname(file).toLowerCase();
-            
+
             try {
                 let sourceDoc;
-                
+
                 if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff'].includes(ext)) {
                     sourceDoc = await imageToPdf(file);
                 } else if (ext === '.pdf') {
@@ -144,23 +144,23 @@ app.post('/api/merge', async (req, res) => {
                 } else {
                     continue;
                 }
-                
+
                 const pages = await finalPdf.copyPages(sourceDoc, sourceDoc.getPageIndices());
                 pages.forEach(page => {
                     finalPdf.addPage(page);
                 });
-                
+
             } catch (error) {
                 console.error(`Lỗi xử lý ${file}:`, error.message);
             }
         }
-        
+
         const finalFileName = ensurePdfExtension(fileName);
         const outputPath = path.join(uploadDir, finalFileName);
         const pdfBytes = await finalPdf.save();
         await fs.writeFile(outputPath, pdfBytes);
-        
-        res.json({ 
+
+        res.json({
             success: true,
             filePath: outputPath,
             fileName: finalFileName,
@@ -176,11 +176,11 @@ app.get('/api/download/:filename', (req, res) => {
     try {
         const filename = req.params.filename;
         const filePath = path.join(uploadDir, filename);
-        
+
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ error: 'File không tìm thấy' });
         }
-        
+
         res.download(filePath, filename, (err) => {
             if (err) {
                 console.error('Download error:', err);
@@ -225,6 +225,6 @@ app.listen(PORT, () => {
 // Cleanup on exit
 process.on('SIGINT', async () => {
     console.log('\n\nDang dung server...');
-    await fs.emptyDir(uploadDir).catch(() => {});
+    await fs.emptyDir(uploadDir).catch(() => { });
     process.exit(0);
 });
